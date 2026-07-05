@@ -7,34 +7,25 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
-
-    # Çevresel değişken olarak lisans onayını en tepede tanımlıyoruz
-    env:
-      ANDROID_WELCOME_YES_FOR_REAL: "1"
-      NONINTERACTIVE: "1"
+    runs-on: ubuntu-latest
+    # Kivy ekibinin her şeyi içinde hazır ettiği resmi konteyneri çağırıyoruz
+    container:
+      image: ghcr.io/kivy/buildozer:master
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-
-    - name: Install Platform Dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libgdbm-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev tk-dev libgomp1
-        pip install --upgrade pip setuptools wheel cython buildozer
-
     - name: Build with Buildozer
       run: |
-        # Buildozer'ın lisansları otomatik kabul etmesi için gereken tüm sistem değişkenlerini alt alta çalıştırıyoruz
-        export ANDROID_HOME=$HOME/.buildozer/android/platform/android-sdk
-        export ANDROID_NDK_HOME=$HOME/.buildozer/android/platform/android-ndk-r25b
-        
-        # Derlemeyi tetikliyoruz
-        buildozer android debug --accept-sdk-license
+        # Konteyner içinde güvenli klasör izni veriyoruz
+        git config --global --add safe.directory '*'
+        # Lisanslar zaten yüklü, doğrudan derlemeyi başlatıyoruz
+        buildozer android debug
 
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: FoxBrowser-APK
+        path: bin/*.apk
+        
