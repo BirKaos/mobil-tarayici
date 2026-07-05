@@ -11,25 +11,26 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
-        python-packages: 'buildozer cython'
+        python-version: '3.11'
 
     - name: Install Platform Dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libgdbm-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev tk-dev libgomp1
+        pip install --upgrade pip setuptools wheel cython buildozer
 
     - name: Build with Buildozer
       run: |
         buildozer android debug
 
     - name: Upload APK
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: FoxBrowser-APK
         path: bin/*.apk
-        
+
