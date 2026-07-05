@@ -26,9 +26,7 @@ jobs:
 
     - name: Build with Buildozer
       run: |
-        # Android lisanslarını otomatik olarak onaylamak için bu çevresel değişkeni ekliyoruz
-        export APP_ANDROID_ACCEPT_SDK_LICENSE="1"
-        yes | buildozer android debug
+        buildozer android debug --accept-sdk-license
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
