@@ -26,11 +26,13 @@ jobs:
 
     - name: Build with Buildozer
       run: |
-        buildozer android debug
+        # Android lisanslarını otomatik olarak onaylamak için bu çevresel değişkeni ekliyoruz
+        export APP_ANDROID_ACCEPT_SDK_LICENSE="1"
+        yes | buildozer android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: FoxBrowser-APK
         path: bin/*.apk
-
+        
